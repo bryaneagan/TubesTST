@@ -9,3 +9,7 @@ class AuthDetails(BaseModel):
             "username": self.username,
             "password": self.password
         }
+    
+class StockDetails(BaseModel):
+    stockCode : str
+    date : str

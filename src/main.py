@@ -1,8 +1,10 @@
 from DatabaseConnection import get_account_collection
 from fastapi import FastAPI, Depends, HTTPException, Query
 from .auth import AuthHandler
-from .schemas import AuthDetails
+from .schemas import AuthDetails, StockDetails
 import uuid
+from .service import stock_forecast
+
 
 app = FastAPI()
 
@@ -42,9 +44,10 @@ def login (auth_details: AuthDetails) :
 def unprotected():
     return {"hello": "world"}
 
-@app.get('/protected')
-def protected(username=Depends(auth_handler.auth_wrapper)): 
-    return {'name' : username}
+@app.post('/stockforecast')
+def stockforecast(stock_details : StockDetails,username=Depends(auth_handler.auth_wrapper)): 
+    stock_result = stock_forecast(stockCode = stock_details.stockCode, date = stock_details.date)
+    return stock_result
 
 
 
