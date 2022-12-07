@@ -39,5 +39,5 @@ def stock_forecast(stockCode : str, date : str) :
     df2 = pd.DataFrame(prediction_table)
 
     #return price 
-    print("IDR "+ str(df2.iloc[0,1]))
-    return (str(df2.iloc[0,1]))
+    # print("IDR "+ str(df2.iloc[0,1]))
+    return (float(df2.iloc[0,1]))

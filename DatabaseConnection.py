@@ -6,3 +6,6 @@ db = client.account
 
 def get_account_collection() :
     return db["userdata"]
+
+def get_stock_collection() :
+    return db["stockdata"]
