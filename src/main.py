@@ -54,9 +54,8 @@ def stockforecast(stock_details : StockDetails):
     else : 
         return {"message" : "Saham tidak tersedia dalam list forecast"}
 
-
 @app.post('/buystock')
-def buystock(stock_inventory : StockInventory):
+def buystock(stock_inventory : StockInventory,username=Depends(auth_handler.auth_wrapper)):
     stock_dict = {
         '_id' : stock_inventory.stockCode,
         'stockAmount' : stock_inventory.stockAmount
@@ -75,7 +74,7 @@ def buystock(stock_inventory : StockInventory):
     return {"message" : "Saham tidak tersedia"}
 
 @app.post('/sellstock')
-def sellstock(stock_invetory : StockInventory): 
+def sellstock(stock_invetory : StockInventory,username=Depends(auth_handler.auth_wrapper)): 
     stock_dict = {
         '_id' : stock_invetory.stockCode,
         'stockAmount' : stock_invetory.stockAmount
@@ -96,18 +95,12 @@ def sellstock(stock_invetory : StockInventory):
     else :
             return {"message" : "Saham tidak ditemukan"}
 
-
 @app.get("/stockinventory")
-def stockinventory() :
+def stockinventory(username=Depends(auth_handler.auth_wrapper)) :
     stock_list = []
     collection_of_stocks = get_stock_collection()
     result =  collection_of_stocks.find({})
-    print(result)
     for stock in result:
         print(stock)
         stock_list.append(stock)
     return {"stock list" : stock_list}
-
-
-
-
