@@ -8,4 +8,7 @@ def get_account_collection() :
     return db["userdata"]
 
 def get_stock_collection() :
-    return db["stockdata"]
+    return db["stockinventory"]
+
+def get_history_collection() :
+    return db["transactionhistory"]
