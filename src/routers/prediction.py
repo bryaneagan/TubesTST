@@ -28,8 +28,7 @@ def stockforecast(stock_details : StockDetails,username=Depends(auth_handler.aut
 
 
 ### Fetch forecast data from Modan's API
-@router.post('/stockrecommendation')
-def stockrecommendation():
+def fetch_data(type, amount):
     loginHeader = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -54,14 +53,22 @@ def stockrecommendation():
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json'
         }
-
+    
+    request_data = {
+        "type": type,
+        "amount": amount
+    }
     recommended_stocks = []
-    response = requests.get("http://128.199.149.182:8069/stock/recommended-stock",headers=header)
+    response = requests.post("http://128.199.149.182:8069/stock/recommended-stock",headers=header,json=request_data)
     if response.status_code == 200:
         # Access the response data
         data = response.json()
         recommended_stocks.append(data)
     else:
         print('Failed to fetch data')
-    
     return recommended_stocks
+
+
+@router.post("/stockrecommendation")
+async def stockrecommendation(date : DateInformation,username=Depends(auth_handler.auth_wrapper)):
+    return fetch_data(date.type, date.amount)
