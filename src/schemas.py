@@ -27,6 +27,10 @@ class TransactionHistory(BaseModel) :
     stockName : str
     stockTotal: int
 
+class DateInformation(BaseModel):
+    type: str = "week"
+    amount: int = 4
+
 #bluechip stocks by IDX per July 2022
 stocks = ["ADRO.JK", "AMRT.JK", "ANTM.JK", "ASII.JK", "BBCA.JK", 
 "BBNI.JK", "BBRI.JK", "BBTN.JK", "BFIN.JK", "BMRI.JK", "BRPT.JK", "BUKA.JK", "CPIN.JK",

@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 from fastapi import FastAPI, Depends, HTTPException
 from src.auth import AuthHandler
-from src.schemas import StockDetails, stocks
+from src.schemas import StockDetails, stocks, DateInformation
 from src.service import stock_forecast
+import datetime
+import requests
 
 router = APIRouter(
     prefix = "/prediction",
@@ -16,7 +18,50 @@ def stockforecast(stock_details : StockDetails,username=Depends(auth_handler.aut
     for stk in stocks :
         if f"{stock_details.stockCode}.JK" == stk:
             format_date = f"{stock_details.year}-{stock_details.month}-{stock_details.date}"
-            stock_result = stock_forecast(stockCode = stock_details.stockCode, date = format_date)
-            return {"stock price": stock_result}
+            if (datetime.datetime(stock_details.year,stock_details.month, stock_details.date) <= datetime.datetime(2027,12,6)) :
+                stock_result = stock_forecast(stockCode = stock_details.stockCode, date = format_date)
+                return {"stock price": stock_result}
+            else :
+                raise HTTPException(status_code=404, detail='Stock date is not available in forecast list')
     else : 
-        raise HTTPException(status_code=404, detail='Stock is not available in forecast list')
+        raise HTTPException(status_code=404, detail='Stock code is not available in forecast list')
+
+
+### Fetch forecast data from Modan's API
+@router.post('/stockrecommendation')
+def stockrecommendation():
+    loginHeader = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    loginData = {
+    "username": "xxxadminxxx",
+    "password": "admin123"
+    }
+    loginResponse = requests.post("http://128.199.149.182:8069/user/login",headers=loginHeader,json=loginData)
+
+    token = ""
+    if loginResponse.status_code == 200:
+        # Access the loginResponse data
+        tokenData = loginResponse.json()
+        token = tokenData["token"]
+    else:
+        print('Failed to fetch data')
+
+    header = {
+            'accept': 'application/json',
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+
+    recommended_stocks = []
+    response = requests.get("http://128.199.149.182:8069/stock/recommended-stock",headers=header)
+    if response.status_code == 200:
+        # Access the response data
+        data = response.json()
+        recommended_stocks.append(data)
+    else:
+        print('Failed to fetch data')
+    
+    return recommended_stocks
