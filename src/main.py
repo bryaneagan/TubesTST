@@ -20,7 +20,7 @@ async def root():
 @app.post('/register') 
 def register (auth_details: AuthDetails) : 
     if any(x['username'] == auth_details.username for x in users):
-        raise HTTPException(status_code=400, detail='Username sudah tersedia')
+        raise HTTPException(status_code=400, detail='Username is taken')
     hashed_password = auth_handler.get_password_hash(auth_details.password)
     user_dict = {
         '_id': uuid.uuid4().hex,
@@ -29,7 +29,7 @@ def register (auth_details: AuthDetails) :
     }
     collection_of_users = get_account_collection()
     collection_of_users.insert_one(user_dict)
-    return {"message" : "Register Sukses"}
+    return {"message" : "Register Success!"}
 
 @app.post ('/login')
 def login (auth_details: AuthDetails) : 
@@ -39,7 +39,7 @@ def login (auth_details: AuthDetails) :
         if user["username"] == auth_details.username and auth_handler.verify_password(auth_details.password, user['password']):
             token = auth_handler.encode_token(user['username'])
             return { 'token': token }
-    raise HTTPException(status_code=401, detail='Username dan/atau password tidak tepat')
+    raise HTTPException(status_code=401, detail='Username and/or password is invalid')
 
 @app.get("/stocklist")
 def stocklist() :
@@ -49,7 +49,7 @@ def stocklist() :
 def stockforecast(stock_details : StockDetails,username=Depends(auth_handler.auth_wrapper)): 
     for stk in stocks :
         if f"{stock_details.stockCode}.JK" == stk:
-            format_date = f"{stock_details.year}-{stock_details.month}-{stock_details.day}"
+            format_date = f"{stock_details.year}-{stock_details.month}-{stock_details.date}"
             stock_result = stock_forecast(stockCode = stock_details.stockCode, date = format_date)
             return {"value": stock_result}
     else : 
@@ -81,13 +81,12 @@ def buystock(stock_inventory : StockInventory,username=Depends(auth_handler.auth
             else:
                 collection_of_stocks.insert_one(stock_dict)
                 print(transaction_dict)
-                # input_history()  
             input_history
             return {"message": "Pembelian sukses"}
     return {"message" : "Saham tidak tersedia"}
 
 @app.post('/sellstock')
-def sellstock(stock_invetory : StockInventory): 
+def sellstock(stock_invetory : StockInventory,username=Depends(auth_handler.auth_wrapper)): 
     stock_dict = {
         '_id' : stock_invetory.stockCode,
         'stockAmount' : stock_invetory.stockAmount
@@ -129,7 +128,7 @@ def stockinventory(username=Depends(auth_handler.auth_wrapper)) :
     return {"stock list" : stock_list}
 
 @app.get("/transactionhistory")
-def transactionhistory() :
+def transactionhistory(username=Depends(auth_handler.auth_wrapper)) :
     transaction_history = []
     collection_of_history = get_history_collection()
     result =  collection_of_history.find({})

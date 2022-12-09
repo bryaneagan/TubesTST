@@ -15,8 +15,7 @@ class StockDetails(BaseModel):
     stockCode : str 
     year: int
     month: int
-    day : int
-
+    date : int
 
 class StockInventory(BaseModel) :
     stockCode : str 
