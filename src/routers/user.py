@@ -3,6 +3,7 @@ from src.DatabaseConnection import get_account_collection
 from fastapi import FastAPI, Depends, HTTPException
 from src.auth import AuthHandler
 from src.schemas import AuthDetails
+import uuid
 
 router = APIRouter(
     prefix = "/user",
@@ -10,11 +11,16 @@ router = APIRouter(
 )
 
 auth_handler = AuthHandler()
+users = []
 
 @router.post('/register') 
 def register (auth_details: AuthDetails) : 
-    if any(x['username'] == auth_details.username for x in users):
-        raise HTTPException(status_code=400, detail='Username is taken')
+    # if any(x['username'] == auth_details.username for x in users):
+    user = None
+    collection_of_users = get_account_collection()
+    for user in collection_of_users.find({"username": auth_details.username}):
+        if (user["username"] == auth_details.username) :
+            raise HTTPException(status_code=400, detail='Username is taken')
     hashed_password = auth_handler.get_password_hash(auth_details.password)
     user_dict = {
         '_id': uuid.uuid4().hex,
