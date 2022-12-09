@@ -82,7 +82,7 @@ def stockinventory(username=Depends(auth_handler.auth_wrapper)) :
     for stock in result:
         print(stock)
         stock_list.append(stock)
-    return {"stock list" : stock_list}
+    return {"stock inventory" : stock_list}
 
 @router.get("/transactionhistory")
 def transactionhistory(username=Depends(auth_handler.auth_wrapper)) :

@@ -41,3 +41,5 @@ def stock_forecast(stockCode : str, date : str) :
     #return price 
     # print("IDR "+ str(df2.iloc[0,1]))
     return (float(df2.iloc[0,1]))
+
+# stock_forecast(stockCode, date)

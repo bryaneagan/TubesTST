@@ -18,7 +18,7 @@ async def root():
 
 @app.get("/stocklist")
 def stocklist() :
-    return stocks
+    return {"stock list" : stocks}
     
 
 
