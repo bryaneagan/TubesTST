@@ -13,7 +13,7 @@ users = []
 @app.get("/")
 async def root():
     print(users)
-    return {"message": "Welcome to Bryan Eagan - 18220041 's Stock Marketplace and Stock Forecast Simulation API"}
+    return {"message": "Welcome to [18220041] Bryan Eagan's Stock Marketplace and Stock Forecast Simulation API"}
 
 
 @app.get("/stocklist")
