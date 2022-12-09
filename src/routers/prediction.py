@@ -12,11 +12,11 @@ router = APIRouter(
 auth_handler = AuthHandler()
 
 @router.post('/stockforecast')
-def stockforecast(stock_details : StockDetails,username=Depends(auth_handler.auth_wrapper)): 
+def stockforecast(stock_details : StockDetails): 
     for stk in stocks :
         if f"{stock_details.stockCode}.JK" == stk:
             format_date = f"{stock_details.year}-{stock_details.month}-{stock_details.date}"
             stock_result = stock_forecast(stockCode = stock_details.stockCode, date = format_date)
-            return {"value": stock_result}
+            return {"stock price": stock_result}
     else : 
         raise HTTPException(status_code=404, detail='Stock is not available in forecast list')

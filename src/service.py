@@ -10,10 +10,11 @@ import os
 def stock_forecast(stockCode : str, date : str) :
     # def stock_forecast (stockCode, date) :
     outname = str(stockCode + ".JK.csv") 
-    outdir = 'D:\BES FILES\Institut Teknologi Bandung\Year 3\Semester 5\Teknologi Sistem Terintegrasi\Tubes\MongoDB\TubesTST\dataset'
+    outdir = 'src/dataset'
     fullname = os.path.join(outdir, outname)
 
     data = pd.read_csv(fullname)
+    print (data)
 
     #Only pick date and close price column
     data = data[["Date", "Close"]]
@@ -42,4 +43,4 @@ def stock_forecast(stockCode : str, date : str) :
     # print("IDR "+ str(df2.iloc[0,1]))
     return (float(df2.iloc[0,1]))
 
-# stock_forecast(stockCode, date)
+# print(stock_forecast(stockCode, date))

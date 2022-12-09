@@ -1,3 +1,1 @@
-stockCode = input("kodeSaham : ")
-
-date = input("YYYY-MM-DD : ")
+stock_forecast(stockCode, date)
