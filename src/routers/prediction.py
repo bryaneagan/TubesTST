@@ -12,7 +12,7 @@ router = APIRouter(
 auth_handler = AuthHandler()
 
 @router.post('/stockforecast')
-def stockforecast(stock_details : StockDetails): 
+def stockforecast(stock_details : StockDetails,username=Depends(auth_handler.auth_wrapper)): 
     for stk in stocks :
         if f"{stock_details.stockCode}.JK" == stk:
             format_date = f"{stock_details.year}-{stock_details.month}-{stock_details.date}"
